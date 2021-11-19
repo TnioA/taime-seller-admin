@@ -7,14 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CalendarComponent implements OnInit {
   public atualDate = new Date();
+  public selectedYear: number = this.atualDate.getFullYear();
   public selectedMonth: number = this.atualDate.getMonth();
-  public selectedDay: number = this.atualDate.getDay();
 
   public months: string[] = [
     "Janeiro",
     "Fevereiro",
     "Março",
     "Abril",
+    "Maio",
     "Junho",
     "Julho",
     "Agosto",
@@ -32,16 +33,18 @@ export class CalendarComponent implements OnInit {
     "Sábado",
     "Domingo"
   ];
-  
 
+  public calendarDays: any[] = [];
+  
   constructor() { }
 
   ngOnInit(): void {
+    this.mountCalendarDays();
   }
 
   nextMonth(){
     if(this.selectedMonth === 11){
-      this.selectedMonth = 1;
+      this.selectedMonth = 0;
       return;
     }
 
@@ -49,7 +52,7 @@ export class CalendarComponent implements OnInit {
   }
 
   previousMonth(){
-    if(this.selectedMonth === 1){
+    if(this.selectedMonth === 0){
       this.selectedMonth = 11;
       return;
     }
@@ -57,4 +60,17 @@ export class CalendarComponent implements OnInit {
     this.selectedMonth = this.selectedMonth - 1;
   }
 
+  daysInMonth() {
+    var data = new Date(this.selectedYear, this.selectedMonth+1, 0);
+    return data.getDate();
+  }
+
+  mountCalendarDays(){
+    for(var i = 1; i<= this.daysInMonth(); i++){
+      this.calendarDays.push({
+        day: i, 
+        dayInWeek: new Date(this.selectedYear, this.selectedMonth, i).getDay()
+      });
+    }
+  }
 }
