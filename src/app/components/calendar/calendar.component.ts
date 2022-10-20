@@ -42,35 +42,53 @@ export class CalendarComponent implements OnInit {
     this.mountCalendarDays();
   }
 
-  nextMonth(){
-    if(this.selectedMonth === 11){
-      this.selectedMonth = 0;
-      return;
-    }
-
-    this.selectedMonth = this.selectedMonth + 1;
-  }
-
   previousMonth(){
     if(this.selectedMonth === 0){
+      this.selectedYear--;
       this.selectedMonth = 11;
-      return;
+    }else{
+      this.selectedMonth--;
     }
-
-    this.selectedMonth = this.selectedMonth - 1;
+    
+    this.mountCalendarDays();
   }
 
-  daysInMonth() {
-    var data = new Date(this.selectedYear, this.selectedMonth+1, 0);
+  nextMonth(){
+    if(this.selectedMonth === 11){
+      this.selectedYear++;
+      this.selectedMonth = 0;
+    }else{
+      this.selectedMonth++;
+    }
+
+    this.mountCalendarDays();
+  }
+
+  daysInMonth(month: number) {
+    var data = new Date(this.selectedYear, (month + 1), 0);
     return data.getDate();
   }
 
   mountCalendarDays(){
-    for(var i = 1; i<= this.daysInMonth(); i++){
-      this.calendarDays.push({
-        day: i, 
-        dayInWeek: new Date(this.selectedYear, this.selectedMonth, i).getDay()
-      });
+    this.calendarDays = [];
+
+    var daysInPreviousMonth = this.daysInMonth(this.selectedMonth - 1);
+    var daysInNextMonth = this.daysInMonth(this.selectedMonth + 1);
+    var fistWeekDay = new Date(this.selectedYear, this.selectedMonth, 1).getDay();
+
+    // setting days of previous month
+    for(var i = (daysInPreviousMonth - fistWeekDay + 1); i<= daysInPreviousMonth; i++){
+      this.calendarDays.push(new Date(this.selectedYear, (this.selectedMonth - 1), i));
+    }
+
+    // setting days of selected month
+    for(var i = 1; i<= this.daysInMonth(this.selectedMonth); i++){
+      this.calendarDays.push(new Date(this.selectedYear, this.selectedMonth, i));
+    }
+
+    // setting days of next month
+    for(var i = 1; i<= daysInNextMonth; i++){
+      this.calendarDays.push(new Date(this.selectedYear, (this.selectedMonth + 1), i));
     }
   }
 }
